@@ -34,6 +34,10 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, swaggerConfig);
   SwaggerModule.setup('api/docs', app, document);
 
+  // Listen for SIGTERM/SIGINT so OnModuleDestroy hooks (Prisma, Redis) run on
+  // docker compose stop / docksight update restarts.
+  app.enableShutdownHooks();
+
   const port = config.get<number>('PORT', 3000);
   await app.listen(port);
 
